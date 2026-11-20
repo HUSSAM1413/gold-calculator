@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>حاسبة شراء الذهب</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3efe6; --card:#fffdf8; --ink:#2a2418; --muted:#7a6f58; --line:#e2d9c3;
+  --gold:#b8860b; --gold-deep:#7a5600; --total-bg:#2a2418; --total-ink:#f6d98a;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#16130c; --card:#211c11; --ink:#f3ead3; --muted:#a79a7b; --line:#3a321f;
+    --gold:#e0b34a; --gold-deep:#f0c968; --total-bg:#f6d98a; --total-ink:#2a2418;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16130c; --card:#211c11; --ink:#f3ead3; --muted:#a79a7b; --line:#3a321f;
+  --gold:#e0b34a; --gold-deep:#f0c968; --total-bg:#f6d98a; --total-ink:#2a2418;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Tajawal",Tahoma,Arial,sans-serif;min-height:100vh;display:flex;justify-content:center;padding:24px 16px}
+main{width:100%;max-width:420px}
+h1{font-size:26px;font-weight:800;margin:8px 0 20px;color:var(--gold-deep)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+label{display:block;font-size:15px;font-weight:500;margin:0 0 6px;color:var(--muted)}
+.field{margin-bottom:16px}
+.input{display:flex;align-items:center;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);overflow:hidden}
+.input:focus-within{border-color:var(--gold);outline:2px solid var(--gold);outline-offset:1px}
+input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;font-size:20px;font-weight:700;padding:12px 14px;direction:ltr;text-align:right;outline:none}
+.unit{padding:0 14px;color:var(--muted);font-size:14px;white-space:nowrap}
+.hint{font-size:13px;color:var(--muted);margin:-8px 0 16px}
+.total{background:var(--total-bg);color:var(--total-ink);border-radius:14px;padding:18px;margin-top:6px}
+.total .t{font-size:15px;opacity:.85}
+.total .v{font-size:34px;font-weight:800;direction:ltr;text-align:right;margin-top:2px}
+.break{margin-top:12px;font-size:14px;color:var(--muted);line-height:1.9}
+.break div{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line)}
+.break span:last-child{direction:ltr;font-weight:500;color:var(--ink)}
+button{margin-top:14px;width:100%;padding:12px;border:1.5px solid var(--line);background:transparent;color:var(--muted);font:inherit;font-size:15px;border-radius:12px;cursor:pointer}
+button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.chips{display:flex;gap:8px;margin-bottom:8px}
+.chip{margin:0;flex:1;padding:10px 0;font-weight:700;font-size:16px;color:var(--ink)}
+.chip.on{background:var(--gold);border-color:var(--gold);color:#fff}
+.st{font-size:13px;color:var(--muted);min-height:18px;margin:0 0 16px}
+.tabs{display:flex;gap:8px;margin-bottom:16px}
+.tab{margin:0;flex:1;padding:10px 0;font-weight:700;font-size:15px;color:var(--ink)}
+.tab.on{background:var(--gold);border-color:var(--gold);color:#fff}
+#rv{display:none}
+.rev #fm,.rev #fs{display:none}
+.rev #rv{display:block}
+.nv{display:flex;align-items:center;gap:10px;color:var(--ink);margin:0 0 14px;cursor:pointer}
+.nv input{width:22px;height:22px;padding:0;flex:none;accent-color:var(--gold)}
+</style>
+</head>
+<body>
+<main>
+  <h1>حاسبة شراء الذهب</h1>
+  <div class="tabs"><button type="button" class="tab on" id="mf">احسب المجموع</button><button type="button" class="tab" id="mr">حلل سعر البائع</button></div>
+  <div class="card">
+    <div class="field"><label for="w">الوزن</label>
+      <div class="input"><input id="w" type="number" inputmode="decimal" min="0" step="any" value="1"><span class="unit">جرام</span></div></div>
+    <div class="field"><label for="p">سعر الجرام</label>
+      <div class="chips"><button type="button" class="chip" data-k="24">24</button><button type="button" class="chip" data-k="22">22</button><button type="button" class="chip" data-k="21">21</button><button type="button" class="chip" data-k="18">18</button></div>
+      <div class="input"><input id="p" type="number" inputmode="decimal" min="0" step="any" placeholder="0"><span class="unit">ريال</span></div>
+      <div class="st" id="st">اضغط على العيار عشان يجيب سعر اليوم</div></div>
+    <div class="field" id="rv"><label for="q">المبلغ اللي قاله البائع (شامل الضريبة)</label>
+      <div class="input"><input id="q" type="number" inputmode="decimal" min="0" step="any" placeholder="0"><span class="unit">ريال</span></div>
+      <div class="st">الباقي بعد الذهب والضريبة ينقسم بالنص بين المصنعية والمكسب</div></div>
+    <div class="field" id="fm"><label for="m">المصنعية</label>
+      <div class="input"><input id="m" type="number" inputmode="decimal" min="0" step="any" placeholder="0"><span class="unit">ريال / جرام</span></div></div>
+    <div class="field" id="fs"><label for="s">مكسب المحل</label>
+      <div class="input"><input id="s" type="number" inputmode="decimal" min="0" step="any" placeholder="0"><span class="unit">ريال / جرام</span></div></div>
+    <label class="nv"><input type="checkbox" id="nv"><span>سبائك عيار 24 (بدون ضريبة)</span></label>
+    <div class="total">
+      <div class="t">المجموع شامل الضريبة</div>
+      <div class="v" id="total">0.00</div>
+    </div>
+    <div class="break" id="break"></div>
+    <button id="reset" type="button">مسح الكل</button>
+  </div>
+</main>
+<script>
+(function(){
+  var w=document.getElementById('w'),p=document.getElementById('p'),m=document.getElementById('m'),s=document.getElementById('s');
+  var total=document.getElementById('total'),brk=document.getElementById('break');
+  function n(el){var v=parseFloat(el.value);return isFinite(v)&&v>0?v:0;}
+  function f(x){return x.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+  var rev=false,noVat=false,qi=document.getElementById('q'),nv=document.getElementById('nv');
+  function rate(){return noVat?0:0.15;}
+  function calc(){
+    var wt=n(w),gold=n(p)*wt,mk=n(m)*wt,pr=n(s)*wt;
+    var sub=gold+mk+pr,vat=sub*rate(),tot=sub+vat,warn='';
+    if(rev){var q=n(qi);tot=q;sub=q/(1+rate());vat=q-sub;var rem=sub-gold;if(rem<0){warn='<div><span>تنبيه: المبلغ أقل من قيمة الذهب</span><span></span></div>';rem=0;}mk=rem/2;pr=rem/2;}
+    total.textContent=f(tot);
+    brk.innerHTML=warn+'<div><span>قيمة الذهب</span><span>'+f(gold)+'</span></div>'+
+      '<div><span>المصنعية</span><span>'+f(mk)+'</span></div>'+
+      '<div><span>مكسب المحل</span><span>'+f(pr)+'</span></div>'+
+      '<div><span>المجموع قبل الضريبة</span><span>'+f(sub)+'</span></div>'+
+      '<div><span>ضريبة القيمة المضافة '+(noVat?'0%':'15%')+'</span><span>'+f(vat)+'</span></div>';
+  }
+  [w,p,m,s,qi].forEach(function(el){el.addEventListener('input',calc);});
+  document.getElementById('reset').addEventListener('click',function(){w.value=1;p.value='';m.value='';s.value='';qi.value='';noVat=false;nv.checked=false;calc();p.focus();});
+  var prices=null,karat=null,st=document.getElementById('st'),chips=document.querySelectorAll('.chip');
+  function show(){if(prices&&karat&&prices[karat]){p.value=prices[karat].toFixed(2);calc();}}
+  function getHtml(){
+    var u='https://saudigoldprice.com/',e=encodeURIComponent(u),i=0;
+    var tries=[u,'https://api.allorigins.win/raw?url='+e,'https://corsproxy.io/?url='+e,'https://api.codetabs.com/v1/proxy?quest='+e];
+    function next(){
+      if(i>=tries.length)return Promise.reject(new Error('all'));
+      return fetch(tries[i++],{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('http');return r.text();}).then(function(t){if(t.indexOf('سعر جرام الذهب')<0)throw new Error('bad');return t;}).catch(next);
+    }
+    return next();
+  }
+  function load(){
+    st.textContent='جاري جلب السعر...';
+    return fetch('https://xaus.com/api/v1/spot',{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('http');return r.json();}).then(function(j){
+      var oz=parseFloat(j.spot_usd_oz||(j.xau&&j.xau.price));
+      if(!isFinite(oz)||oz<=0)throw new Error('bad');
+      var g=oz/31.1035*3.75;
+      prices={'24':g,'22':g*22/24,'21':g*21/24,'18':g*18/24};
+      show();
+      st.textContent='سعر عيار '+karat+' محسوب من سعر الأونصة العالمي (خام، بدون مصنعية)';
+    }).catch(function(){return getHtml().then(function(t){
+      var d=new DOMParser().parseFromString(t,'text/html'),o={};
+      d.querySelectorAll('tr').forEach(function(tr){
+        var c=tr.querySelectorAll('td,th');
+        if(c.length<2)return;
+        var m=c[0].textContent.match(/سعر جرام الذهب عيار\s*(\d+)/);
+        var v=parseFloat(c[1].textContent.replace(/,/g,''));
+        if(m&&isFinite(v)&&!(m[1] in o))o[m[1]]=v;
+      });
+      if(!o['21'])throw new Error('parse');
+      prices=o;show();
+      st.textContent='سعر عيار '+karat+' من saudigoldprice.com (خام، بدون مصنعية)';
+    }).catch(function(){st.textContent='ما قدرت أجلب السعر، تأكد من النت أو اكتبه بنفسك.';});});
+  }
+  chips.forEach(function(c){c.addEventListener('click',function(){
+    karat=c.dataset.k;noVat=(karat==='24');nv.checked=noVat;calc();
+    chips.forEach(function(x){x.classList.toggle('on',x===c);});
+    load();
+  });});
+  function setMode(r){rev=r;document.querySelector('main').classList.toggle('rev',r);document.getElementById('mf').classList.toggle('on',!r);document.getElementById('mr').classList.toggle('on',r);document.querySelector('.total .t').textContent=r?'المبلغ شامل الضريبة':'المجموع شامل الضريبة';calc();}
+  document.getElementById('mf').addEventListener('click',function(){setMode(false);});
+  document.getElementById('mr').addEventListener('click',function(){setMode(true);});
+  nv.addEventListener('change',function(){noVat=nv.checked;calc();});
+  calc();
+})();
+</script>
+</body>
+</html>
