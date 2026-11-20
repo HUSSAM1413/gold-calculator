@@ -22,8 +22,9 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Tajawal",Tahoma,Arial,sans-serif;min-height:100vh;display:flex;justify-content:center;padding:24px 16px}
 main{width:100%;max-width:420px}
-.top{display:flex;justify-content:space-between;align-items:center;margin:8px 0 20px}
-h1{font-size:26px;font-weight:800;margin:0;color:var(--gold-deep)}
+.top{gap:8px;display:flex;justify-content:space-between;align-items:center;margin:8px 0 20px}
+h1{white-space:nowrap;min-width:0;font-size:22px;font-weight:800;margin:0;color:var(--gold-deep)}
+[dir=ltr] h1{font-size:17px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
 label{display:block;font-size:15px;font-weight:500;margin:0 0 6px;color:var(--muted)}
 .field{margin-bottom:16px}
@@ -39,38 +40,63 @@ input[type=text]{flex:1;min-width:0;border:0;background:transparent;color:var(--
 [dir=rtl] .total .v{text-align:right}
 [dir=ltr] .total .v{text-align:left}
 .total small{font-size:16px;font-weight:500}
+.live{margin-bottom:14px}
+[hidden]{display:none!important}
+.livebtn{display:flex;justify-content:space-between;align-items:center;width:100%;margin:0 0 12px;padding:12px 14px;font-weight:700;font-size:16px;color:var(--gold-deep);background:var(--card)}
+.lbr{display:flex;align-items:center;gap:10px}
+.tools{display:flex;align-items:center;gap:8px;flex:none}
+.curs{display:flex;gap:4px}
+.cur,.lang{width:36px;height:36px;margin:0;padding:0;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;line-height:1;color:var(--ink)}
+.cur.on{background:var(--gold);border-color:var(--gold);color:#fff}
+.lh{display:flex;justify-content:space-between;align-items:center;font-weight:700;color:var(--gold-deep);margin-bottom:10px;gap:8px}
+.dot{width:10px;height:10px;border-radius:50%;background:#2e9d57;flex:none}
+.dot.bad{background:#c0392b}
+.lg{display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:8px}
+.c{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px;text-align:center}
+.c .k{font-size:12px;color:var(--muted)}
+.c .pv{font-size:17px;font-weight:800;direction:ltr}
+.live .st{margin:10px 0 0}
 .break{margin-top:12px;font-size:14px;color:var(--muted);line-height:1.9}
 .break div{display:flex;justify-content:space-between;gap:12px;border-bottom:1px dashed var(--line)}
 .break span:last-child{direction:ltr;font-weight:500;color:var(--ink);white-space:nowrap}
 button{margin-top:14px;width:100%;padding:12px;border:1.5px solid var(--line);background:transparent;color:var(--muted);font:inherit;font-size:15px;border-radius:12px;cursor:pointer}
 button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-.lang{width:auto;margin:0;padding:6px 14px;font-size:14px;color:var(--ink)}
 .chips{display:flex;gap:8px;margin-bottom:8px}
 .chip,.tab{margin:0;flex:1;padding:10px 0;font-weight:700;color:var(--ink)}
 .chip{font-size:16px}
-.tab{font-size:15px}
+.tab{font-size:13px;padding:8px 2px;line-height:1.3}
 .chip.on,.tab.on{background:var(--gold);border-color:var(--gold);color:#fff}
 .tabs{display:flex;gap:8px;margin-bottom:16px}
 .st{font-size:13px;color:var(--muted);min-height:18px;margin:0 0 16px}
 .nv{display:flex;align-items:center;gap:10px;color:var(--ink);margin:0 0 14px;cursor:pointer}
 .nv input{width:22px;height:22px;padding:0;flex:none;accent-color:var(--gold)}
 #rv{display:none}
-.rev #fm,.rev #fs{display:none}
+.rev #fm,.rev #fs,.zk #fm,.zk #fs,.zk .nv,.zk #fw,.zk #fp{display:none}
+#zkf{display:none}
+.zk #zkf{display:block}
+.zr{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+.zr select{flex:none;width:80px;padding:10px 4px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;font-size:15px;font-weight:700}
+.zr .input{flex:1;min-width:0}
+.zr input[type=text]{font-size:16px;padding:10px 8px}
+.zx{width:34px;height:34px;margin:0;padding:0;flex:none;font-size:18px;line-height:1}
+.za{margin:4px 0 8px;color:var(--gold-deep);font-weight:700}
 .rev #rv{display:block}
 </style>
 </head>
 <body>
 <main>
-  <div class="top"><h1 data-i="title">حاسبة شراء الذهب</h1><button type="button" class="lang" id="lang">English</button></div>
-  <div class="tabs"><button type="button" class="tab on" id="mf" data-i="tabF">احسب المجموع</button><button type="button" class="tab" id="mr" data-i="tabR">حلل سعر البائع</button></div>
-  <div class="tabs"><button type="button" class="tab cur on" data-c="SAR" data-i="curSAR">ريال سعودي</button><button type="button" class="tab cur" data-c="USD" data-i="curUSD">دولار أمريكي</button></div>
+  <div class="top"><h1 data-i="title">حاسبة شراء الذهب</h1><div class="tools"><div class="curs"><button type="button" class="cur on" data-c="SAR" data-i="curSAR">﷼</button><button type="button" class="cur" data-c="USD" data-i="curUSD">$</button></div><button type="button" class="lang" id="lang">E</button></div></div>
+  <div class="tabs"><button type="button" class="tab on" id="mf" data-i="tabF">احسب المجموع</button><button type="button" class="tab" id="mr" data-i="tabR">حلل سعر البائع</button><button type="button" class="tab" id="mz" data-i="tabZ">زكاة الذهب</button></div>
+  <button type="button" class="livebtn" id="lb" aria-expanded="false"><span data-i="liveT">أسعار الذهب المباشرة</span><span class="lbr"><span class="dot" id="dot"></span><span id="arr">▾</span></span></button>
+  <div class="card live" id="livep" hidden><div class="lh"><span id="lhu"></span></div><div class="lg" id="lg"></div><div class="st" id="lt"></div></div>
   <div class="card">
-    <div class="field"><label for="w" data-i="weight">الوزن</label>
+    <div class="field" id="fw"><label for="w" data-i="weight">الوزن</label>
       <div class="input"><input id="w" type="text" inputmode="decimal" autocomplete="off" value="1"><span class="unit" data-i="gram">جرام</span></div></div>
-    <div class="field"><label for="p" data-i="price">سعر الجرام</label>
+    <div class="field" id="fp"><label for="p" data-i="price">سعر الجرام</label>
       <div class="chips"><button type="button" class="chip" data-k="24">24</button><button type="button" class="chip" data-k="22">22</button><button type="button" class="chip" data-k="21">21</button><button type="button" class="chip" data-k="18">18</button></div>
       <div class="input"><input id="p" type="text" inputmode="decimal" autocomplete="off" placeholder="0"><span class="unit" data-i="sar">ريال</span></div>
       <div class="st" id="st"></div></div>
+    <div class="field" id="zkf"><div id="zl"></div><button type="button" id="za" class="za" data-i="zAdd">+ إضافة عيار آخر</button><div class="st" data-i="zNote"></div></div>
     <div class="field" id="rv"><label for="q" data-i="quote">المبلغ اللي قاله البائع (شامل الضريبة)</label>
       <div class="input"><input id="q" type="text" inputmode="decimal" autocomplete="off" placeholder="0"><span class="unit" data-i="sar">ريال</span></div>
       <div class="st" data-i="quoteHint"></div></div>
@@ -90,14 +116,14 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 <script>
 (function(){
   var D={
-    ar:{curSAR:'ريال سعودي',curUSD:'دولار أمريكي',title:'حاسبة شراء الذهب',tabF:'احسب المجموع',tabR:'حلل سعر البائع',weight:'الوزن',gram:'جرام',price:'سعر الجرام',sar:'ريال',sarG:'ريال / جرام',
+    ar:{zEq:'الوزن المكافئ لعيار 24',zNis24:'النصاب (عيار 24)',zG24:'الزكاة بالجرام (عيار 24)',zAdd:'+ إضافة عيار آخر',zp:'السعر',zEnter:'أدخل وزن الذهب',zNoP:'سعر الجرام ناقص في بعض الصفوف، اكتبه أو انتظر تحميل الأسعار',zNote:'تُحسب الزكاة على مجموع الذهب كله بعد تحويله لعيار 24',tabZ:'زكاة الذهب',totalZ:'مقدار الزكاة',zNis:'النصاب لعيار {k}',zRea:'بلغ النصاب، تجب الزكاة',zNot:'لم يبلغ النصاب، لا زكاة عليك',zPick:'اختر العيار أولاً',zRate:'نسبة الزكاة',zG:'الزكاة بالجرام',liveT:'أسعار الذهب المباشرة',kar:'عيار {k}',liveUpd:'آخر تحديث',srcSpot:'من سعر الأونصة العالمي',srcSite:'من saudigoldprice.com',liveFail:'تعذر التحديث',liveFailNo:'تعذر جلب الأسعار، تتكرر المحاولة كل 30 ثانية',liveWait:'جاري التحميل...',curSAR:'\ufdfc',curUSD:'$',title:'حاسبة شراء الذهب',tabF:'احسب المجموع',tabR:'حلل سعر البائع',weight:'الوزن',gram:'جرام',price:'سعر الجرام',sar:'ريال',sarG:'ريال / جرام',
       quote:'المبلغ اللي قاله البائع (شامل الضريبة)',quoteHint:'الباقي بعد الذهب والضريبة ينقسم بالنص بين المصنعية والمكسب',
       making:'المصنعية',profit:'مكسب المحل',bars:'سبائك عيار 24 (بدون ضريبة)',totalF:'المجموع شامل الضريبة',totalR:'المبلغ شامل الضريبة',reset:'مسح الكل',
       hint:'اضغط على العيار عشان يجيب سعر اليوم',loading:'جاري جلب السعر...',
       okSpot:'سعر عيار {k} محسوب من سعر الأونصة العالمي (خام، بدون مصنعية)',okSite:'سعر عيار {k} من saudigoldprice.com (خام، بدون مصنعية)',
       fail:'ما قدرت أجلب السعر، تأكد من النت أو اكتبه بنفسك.',
       bGold:'قيمة الذهب',bMk:'المصنعية',bPr:'مكسب المحل',bSub:'المجموع قبل الضريبة',bVat:'ضريبة القيمة المضافة',warn:'تنبيه: المبلغ أقل من قيمة الذهب'},
-    en:{curSAR:'Saudi riyal (SAR)',curUSD:'US dollar (USD)',title:'Gold Purchase Calculator',tabF:'Calculate total',tabR:'Analyze seller price',weight:'Weight',gram:'g',price:'Price per gram',sar:'SAR',sarG:'SAR / g',
+    en:{zEq:'Equivalent weight (24K)',zNis24:'Nisab (24K)',zG24:'Zakat in grams (24K)',zAdd:'+ Add another karat',zp:'Price',zEnter:'Enter gold weight',zNoP:'Price per gram is missing for some rows, type it or wait for prices to load',zNote:'Zakat is calculated on all your gold combined, converted to 24K',tabZ:'Gold zakat',totalZ:'Zakat due',zNis:'Nisab for {k}K',zRea:'Nisab reached, zakat is due',zNot:'Below nisab, no zakat due',zPick:'Select a karat first',zRate:'Zakat rate',zG:'Zakat in grams',liveT:'Live gold prices',kar:'{k}K',liveUpd:'Last update',srcSpot:'from global ounce price',srcSite:'from saudigoldprice.com',liveFail:'update failed',liveFailNo:'Could not fetch prices, retrying every 30 seconds',liveWait:'Loading...',curSAR:'\ufdfc',curUSD:'$',title:'Gold Purchase Calculator',tabF:'Calculate total',tabR:'Analyze seller price',weight:'Weight',gram:'g',price:'Price per gram',sar:'SAR',sarG:'SAR / g',
       quote:"Seller's price (VAT included)",quoteHint:'What is left after gold and VAT is split equally between making charge and profit',
       making:'Making charge',profit:'Shop profit',bars:'24K bars (no VAT)',totalF:'Total incl. VAT',totalR:'Price incl. VAT',reset:'Clear all',
       hint:'Tap a karat to fetch today\u2019s price',loading:'Fetching price...',
@@ -105,7 +131,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
       fail:'Could not fetch the price. Check your internet or type it in.',
       bGold:'Gold value',bMk:'Making charge',bPr:'Shop profit',bSub:'Total before VAT',bVat:'VAT',warn:'Note: the price is lower than the gold value'}
   };
-  var lang='ar',cur='SAR',rev=false,noVat=false,karat=null,prices=null,stKey='hint';
+  var lang='ar',cur='SAR',rev=false,zk=false,noVat=false,karat=null,prices=null,stKey='hint';
   try{var sv=localStorage.getItem('lang');if(sv==='en'||sv==='ar')lang=sv;if(localStorage.getItem('cur')==='USD')cur='USD';}catch(e){}
   function $(id){return document.getElementById(id);}
   var w=$('w'),p=$('p'),m=$('m'),s=$('s'),qi=$('q'),nv=$('nv'),total=$('total'),brk=$('break'),st=$('st'),chips=document.querySelectorAll('.chip');
@@ -114,6 +140,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
     if(k==='sarG')return t('sar')+(lang==='ar'?' / \u062c\u0631\u0627\u0645':' / g');
     return D[lang][k];
   }
+  function numS(s){var v=String(s||'').replace(/\s/g,'');if(v.indexOf(',')>-1&&v.indexOf('.')<0)v=v.replace(',','.');else v=v.replace(/,/g,'');var x=parseFloat(v);return isFinite(x)&&x>0?x:0;}
   function num(el){
     var v=String(el.value).replace(/\s/g,'');
     if(v.indexOf(',')>-1&&v.indexOf('.')<0)v=v.replace(',','.');else v=v.replace(/,/g,'');
@@ -128,6 +155,14 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
   function calc(){
     var wt=num(w),gold=num(p)*wt,mk=num(m)*wt,pr=num(s)*wt,rate=noVat?0:0.15;
     var sub=gold+mk+pr,vat=sub*rate,tot=sub+vat,warn='';
+    if(zk){
+      var eq=0,val=0,miss=false;
+      zrows.forEach(function(r){var wv=numS(r.w),pv=numS(r.p);if(wv>0){eq+=wv*r.k/24;val+=wv*pv;if(pv<=0)miss=true;}});
+      var reached=Math.round(eq*100)/100>=85,zv=reached?val*0.025:0,msg=eq<=0?'zEnter':(reached?'zRea':'zNot');
+      total.innerHTML=f(zv)+' <small>'+t('sar')+'</small>';
+      brk.innerHTML=(miss?'<div><span>'+t('zNoP')+'</span><span></span></div>':'')+row('zEq',eq)+row('zNis24',85)+'<div><span>'+t(msg)+'</span><span></span></div>'+row('bGold',val)+'<div><span>'+t('zRate')+'</span><span>2.5%</span></div>'+row('zG24',reached?eq*0.025:0);
+      return;
+    }
     if(rev){
       var q=num(qi);tot=q;sub=q/(1+rate);vat=q-sub;
       var rem=sub-gold;
@@ -143,12 +178,12 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
     var els=document.querySelectorAll('[data-i]');
     for(var i=0;i<els.length;i++)els[i].textContent=t(els[i].getAttribute('data-i'));
     document.title=t('title');
-    $('lang').textContent=lang==='ar'?'English':'\u0639\u0631\u0628\u064a';
-    $('tl').textContent=t(rev?'totalR':'totalF');
+    $('lang').textContent=lang==='ar'?'E':'\u0639';
+    $('tl').textContent=t(zk?'totalZ':(rev?'totalR':'totalF'));
     var cb=document.querySelectorAll('.cur');for(var j=0;j<cb.length;j++)cb[j].classList.toggle('on',cb[j].dataset.c===cur);
-    renderSt();calc();
+    renderSt();renderLive();zRender();calc();
   }
-  function show(){if(prices&&karat&&prices[karat]){p.value=(cur==='USD'?prices[karat]/3.75:prices[karat]).toFixed(2);calc();}}
+  function show(){if(prices&&karat&&prices[karat]&&!pManual){p.value=(cur==='USD'?prices[karat]/3.75:prices[karat]).toFixed(2);calc();}}
   function getHtml(){
     var u='https://saudigoldprice.com/',e=encodeURIComponent(u),i=0;
     var tries=[u,'https://api.allorigins.win/raw?url='+e,'https://corsproxy.io/?url='+e,'https://api.codetabs.com/v1/proxy?quest='+e];
@@ -158,14 +193,38 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
     }
     return next();
   }
-  function load(){
-    stKey='loading';renderSt();
+  var updated=null,liveFail=false,src='okSpot',pManual=false;
+  var zrows=[{k:'24',w:'',p:'',man:false}];
+  function zPrice(k){var v=prices&&prices[k];return v?(cur==='USD'?v/3.75:v):0;}
+  function zFill(){zrows.forEach(function(r){if(!r.man){var v=zPrice(r.k);r.p=v?v.toFixed(2):'';if(r.pin)r.pin.value=r.p;}});}
+  function zRender(){
+    var box=$('zl');box.innerHTML='';
+    zrows.forEach(function(r){
+      var d=document.createElement('div');d.className='zr';
+      var sel=document.createElement('select');
+      ['24','22','21','18'].forEach(function(k){var o=document.createElement('option');o.value=k;o.textContent=t('kar').replace('{k}',k);if(k===r.k)o.selected=true;sel.appendChild(o);});
+      sel.addEventListener('change',function(){r.k=sel.value;r.man=false;zFill();calc();});
+      function mk(ph,val,cb){
+        var wr=document.createElement('div');wr.className='input';
+        var inp=document.createElement('input');inp.type='text';inp.setAttribute('inputmode','decimal');inp.setAttribute('autocomplete','off');inp.placeholder=ph;inp.value=val;
+        inp.addEventListener('input',function(){fix(inp);cb(inp.value);calc();});
+        wr.appendChild(inp);return {wr:wr,inp:inp};
+      }
+      var a=mk(t('gram'),r.w,function(v){r.w=v;});
+      var b=mk(t('zp'),r.p,function(v){r.p=v;r.man=true;});
+      r.pin=b.inp;
+      d.appendChild(sel);d.appendChild(a.wr);d.appendChild(b.wr);
+      if(zrows.length>1){var x=document.createElement('button');x.type='button';x.className='zx';x.textContent='\u00d7';x.addEventListener('click',function(){zrows.splice(zrows.indexOf(r),1);zRender();calc();});d.appendChild(x);}
+      box.appendChild(d);
+    });
+  }
+  function fetchPrices(){
     return fetch('https://xaus.com/api/v1/spot',{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('http');return r.json();}).then(function(j){
       var oz=parseFloat(j.spot_usd_oz||(j.xau&&j.xau.price));
       if(!isFinite(oz)||oz<=0)throw new Error('bad');
-      var g=oz/31.1035*3.75;
-      prices={'24':g,'22':g*22/24,'21':g*21/24,'18':g*18/24};
-      show();stKey='okSpot';renderSt();
+      var g=oz/31.1035*3.75,o={};
+      ['24','22','21','18','14'].forEach(function(k){o[k]=g*k/24;});
+      return {p:o,src:'okSpot'};
     }).catch(function(){return getHtml().then(function(x){
       var d=new DOMParser().parseFromString(x,'text/html'),o={};
       d.querySelectorAll('tr').forEach(function(tr){
@@ -176,30 +235,65 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
         if(mm&&isFinite(v)&&!(mm[1] in o))o[mm[1]]=v;
       });
       if(!o['21'])throw new Error('parse');
-      prices=o;show();stKey='okSite';renderSt();
-    }).catch(function(){stKey='fail';renderSt();});});
+      return {p:o,src:'okSite'};
+    });});
   }
-  function setMode(r){
-    rev=r;document.querySelector('main').classList.toggle('rev',r);
-    $('mf').classList.toggle('on',!r);$('mr').classList.toggle('on',r);
-    $('tl').textContent=t(r?'totalR':'totalF');calc();
+  function renderLive(){
+    var g=$('lg'),lt=$('lt'),ks=['24','22','21','18','14'],h='';
+    $('lhu').textContent=t('sarG');
+    if(prices){
+      ks.forEach(function(k){if(prices[k]){var v=cur==='USD'?prices[k]/3.75:prices[k];h+='<div class="c"><div class="k">'+t('kar').replace('{k}',k)+'</div><div class="pv">'+f(v)+'</div></div>';}});
+      g.innerHTML=h;
+      lt.textContent=t('liveUpd')+' '+updated.toLocaleTimeString('en-GB')+' \u00b7 '+t(src==='okSite'?'srcSite':'srcSpot')+(liveFail?' \u00b7 '+t('liveFail'):'');
+    }else{g.innerHTML='';lt.textContent=t(liveFail?'liveFailNo':'liveWait');}
+    $('dot').className='dot'+(liveFail?' bad':'');
+  }
+  function refresh(tap){
+    if(tap&&karat){stKey='loading';renderSt();}
+    return fetchPrices().then(function(r){
+      prices=r.p;src=r.src;updated=new Date();liveFail=false;
+      zFill();show();calc();
+      if(karat){stKey=r.src;renderSt();}
+      renderLive();
+    }).catch(function(){
+      liveFail=true;
+      if(tap){stKey='fail';renderSt();}
+      renderLive();
+    });
+  }
+  function setMode(mm){
+    rev=(mm==='r');zk=(mm==='z');
+    var mn=document.querySelector('main');mn.classList.toggle('rev',rev);mn.classList.toggle('zk',zk);
+    $('mf').classList.toggle('on',mm==='f');$('mr').classList.toggle('on',rev);$('mz').classList.toggle('on',zk);
+    $('tl').textContent=t(zk?'totalZ':(rev?'totalR':'totalF'));calc();
   }
   document.querySelectorAll('.cur').forEach(function(b){b.addEventListener('click',function(){
     var c=b.dataset.c;if(c===cur)return;
     var k=c==='USD'?1/3.75:3.75;
     [p,m,s,qi].forEach(function(el){var v=num(el);if(v>0)el.value=(v*k).toFixed(2);});
     cur=c;try{localStorage.setItem('cur',cur);}catch(e){}
+    zrows.forEach(function(r){var v=numS(r.p);if(r.man&&v>0)r.p=(v*k).toFixed(2);});zFill();
     show();apply();
   });});
-  [w,p,m,s,qi].forEach(function(el){el.addEventListener('input',function(){fix(el);calc();});});
+  [w,p,m,s,qi].forEach(function(el){el.addEventListener('input',function(){fix(el);if(el===p)pManual=true;calc();});});
   chips.forEach(function(c){c.addEventListener('click',function(){
     karat=c.dataset.k;noVat=(karat==='24');nv.checked=noVat;
     chips.forEach(function(x){x.classList.toggle('on',x===c);});
-    calc();load();
+    pManual=false;if(prices){show();stKey=src;renderSt();}calc();refresh(true);
   });});
   nv.addEventListener('change',function(){noVat=nv.checked;calc();});
-  $('mf').addEventListener('click',function(){setMode(false);});
-  $('mr').addEventListener('click',function(){setMode(true);});
+  $('mf').addEventListener('click',function(){setMode('f');});
+  $('mr').addEventListener('click',function(){setMode('r');});
+  $('mz').addEventListener('click',function(){setMode('z');});
+  $('lb').addEventListener('click',function(){
+    var o=$('livep').hidden;$('livep').hidden=!o;
+    $('lb').setAttribute('aria-expanded',String(o));
+    $('arr').textContent=o?'\u25b4':'\u25be';
+  });
+  $('za').addEventListener('click',function(){
+    var used=zrows.map(function(r){return r.k;}),nk=['24','22','21','18'].filter(function(k){return used.indexOf(k)<0})[0]||'24';
+    zrows.push({k:nk,w:'',p:'',man:false});zFill();zRender();calc();
+  });
   $('lang').addEventListener('click',function(){
     lang=lang==='ar'?'en':'ar';
     try{localStorage.setItem('lang',lang);}catch(e){}
@@ -207,10 +301,13 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
   });
   $('reset').addEventListener('click',function(){
     w.value='1';p.value='';m.value='';s.value='';qi.value='';noVat=false;nv.checked=false;
-    stKey='hint';karat=null;chips.forEach(function(x){x.classList.remove('on');});
+    stKey='hint';karat=null;pManual=false;zrows=[{k:'24',w:'',p:'',man:false}];zFill();chips.forEach(function(x){x.classList.remove('on');});
     apply();p.focus();
   });
   apply();
+  refresh(false);
+  setInterval(function(){if(!document.hidden)refresh(false);},30000);
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)refresh(false);});
 })();
 </script>
 </body>
