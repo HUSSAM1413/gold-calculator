@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>التنبيهات</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3efe6; --card:#fffdf8; --ink:#2a2418; --muted:#7a6f58; --line:#e2d9c3; --gold:#b8860b; --gold-deep:#7a5600;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#16130c; --card:#211c11; --ink:#f3ead3; --muted:#a79a7b; --line:#3a321f; --gold:#e0b34a; --gold-deep:#f0c968;}
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Tajawal",Tahoma,Arial,sans-serif;min-height:100vh;display:flex;justify-content:center;padding:24px 16px}
+main{width:100%;max-width:420px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:8px 0 20px}
+h1{font-size:22px;font-weight:800;margin:0;color:var(--gold-deep);flex:1}
+button{font:inherit;cursor:pointer;border:1.5px solid var(--line);background:transparent;color:var(--muted);border-radius:12px}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.sq{width:36px;height:36px;padding:0;font-size:16px;font-weight:700;color:var(--ink);flex:none}
+.tabs{display:flex;gap:8px;margin-bottom:16px}
+.tab{flex:1;padding:10px 4px;font-size:14px;font-weight:700;color:var(--ink);display:flex;align-items:center;justify-content:center;gap:6px}
+.tab.on{background:var(--gold);border-color:var(--gold);color:#fff}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.zr{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+select{flex:none;width:66px;padding:10px 2px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;font-size:14px;font-weight:700}
+.input{flex:1;min-width:0;display:flex;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);overflow:hidden}
+input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;font-size:16px;font-weight:700;padding:10px 8px;direction:ltr;outline:none}
+[dir=rtl] input{text-align:right}
+[dir=ltr] input{text-align:left}
+.st{font-size:13px;color:var(--muted);min-height:18px;margin:6px 0}
+.primary{width:100%;padding:12px;margin:6px 0 10px;color:var(--gold-deep);font-weight:700;font-size:15px}
+.ghost{width:100%;padding:10px;font-size:14px;margin-top:6px}
+.ar{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:15px}
+.abx{display:flex;gap:6px;flex:none}
+.abx button{width:32px;height:32px;padding:0;font-size:16px}
+.badge{min-width:20px;height:20px;border-radius:10px;background:#c0392b;color:#fff;font-size:12px;display:inline-flex;align-items:center;justify-content:center;padding:0 5px}
+.n{padding:12px;border:1px solid var(--line);border-radius:12px;margin-bottom:8px;background:var(--bg)}
+.n.un{border-color:var(--gold);box-shadow:inset 3px 0 0 var(--gold)}
+[dir=rtl] .n.un{box-shadow:inset -3px 0 0 var(--gold)}
+.n b{display:block;font-size:15px;margin-bottom:2px}
+.n span{display:block;font-size:14px}
+.n small{display:block;color:var(--muted);font-size:12px;margin-top:4px;direction:ltr}
+[dir=rtl] .n small{text-align:right}
+</style>
+</head>
+<body>
+<main>
+  <div class="top"><button type="button" class="sq" id="back">→</button><h1 id="ttl"></h1><button type="button" class="sq" id="lang">E</button></div>
+  <div class="tabs">
+    <button type="button" class="tab on" id="ts" data-i="tabS"></button>
+    <button type="button" class="tab" id="tc"><span data-i="tabC"></span><span class="badge" id="nb" hidden>0</span></button>
+  </div>
+
+  <div id="ps" class="card">
+    <div class="zr"><select id="ak"></select><select id="ad"></select><select id="ac"></select><div class="input"><input id="at" type="text" inputmode="decimal" autocomplete="off"></div></div>
+    <div class="st" id="now"></div>
+    <button type="button" class="primary" id="aadd" data-i="add"></button>
+    <div class="st" id="msg"></div>
+    <div id="al"></div>
+    <button type="button" class="ghost" id="test" data-i="test"></button>
+    <div class="st" data-i="hint"></div>
+  </div>
+
+  <div id="pc" class="card" hidden>
+    <div id="cl"></div>
+    <button type="button" class="ghost" id="clear" data-i="cclear"></button>
+  </div>
+</main>
+<script>
+(function(){
+  var D={
+    ar:{title:'التنبيهات',tabS:'إعداد التنبيهات',tabC:'مركز الإشعارات',kar:'عيار {k}',now:'السعر الحالي لعيار {k}',add:'+ إضافة تنبيه',
+      hint:'يوصلك إشعار لما يصير سعر الجرام أكبر من أو يساوي (≥) أو أقل من أو يساوي (≤) المبلغ. الفحص في الخلفية كل 15 دقيقة تقريباً، حتى لو التطبيق مسكر. التنبيه يشتغل مرة وحدة، وتقدر تعيد تفعيله بزر ↻.',
+      none:'ما فيه تنبيهات',done:'تم',bad:'اكتب المبلغ المطلوب',saved:'تمت إضافة التنبيه',test:'إرسال إشعار تجريبي',testT:'إشعار تجريبي',testB:'التنبيهات تشتغل ✅',
+      cnone:'ما فيه إشعارات',cclear:'مسح الكل',price:'السعر'},
+    en:{title:'Alerts',tabS:'Set alerts',tabC:'Notification center',kar:'{k}K',now:'Current {k}K price',add:'+ Add alert',
+      hint:'You get a notification when the price per gram is at or above (≥) or at or below (≤) the amount. The check runs in the background about every 15 minutes, even when the app is closed. An alert fires once; re-arm it with ↻.',
+      none:'No alerts yet',done:'done',bad:'Enter the target price',saved:'Alert added',test:'Send test notification',testT:'Test notification',testB:'Alerts are working ✅',
+      cnone:'No notifications yet',cclear:'Clear all',price:'Price'}
+  };
+  function $(id){return document.getElementById(id);}
+  var GB=window.GoldBridge||null,lang='ar',cur='SAR',alerts=[],oz=0;
+  function getP(k){try{if(GB){var v=GB.getPref(k);if(v)return v;}}catch(e){}try{return localStorage.getItem(k);}catch(e){return null;}}
+  function setP(k,v){try{if(GB)GB.setPref(k,v);}catch(e){}try{localStorage.setItem(k,v);}catch(e){}}
+  var sv=getP('lang');if(sv==='en'||sv==='ar')lang=sv;
+  if(getP('cur')==='USD')cur='USD';
+  function t(k){return D[lang][k];}
+  function f(x){return x.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+  function numS(s){var v=String(s||'').replace(/\s/g,'');if(v.indexOf(',')>-1&&v.indexOf('.')<0)v=v.replace(',','.');else v=v.replace(/,/g,'');var x=parseFloat(v);return isFinite(x)&&x>0?x:0;}
+  function fix(el){var v=el.value,r=v.replace(/[\u0660-\u0669\u06F0-\u06F9]/g,function(d){var c=d.charCodeAt(0);return String(c>=1776?c-1776:c-1632);}).replace(/[\u066B\u060C]/g,'.');if(r!==v)el.value=r;}
+  function unit(c){return c==='USD'?(lang==='ar'?'\u062f\u0648\u0644\u0627\u0631':'USD'):(lang==='ar'?'\u0631\u064a\u0627\u0644':'SAR');}
+  function sym(c){return c==='USD'?'$':'\ufdfc';}
+
+  function aLoad(){try{var s=GB?GB.getAlerts():(localStorage.getItem('alerts')||'[]');alerts=JSON.parse(s||'[]');if(!Array.isArray(alerts))alerts=[];}catch(e){alerts=[];}}
+  function aSave(){var j=JSON.stringify(alerts);try{if(GB)GB.setAlerts(j,lang);else localStorage.setItem('alerts',j);}catch(e){}}
+  function hGet(){try{return JSON.parse(GB?GB.getHistory():(localStorage.getItem('hist')||'[]'))||[];}catch(e){return [];}}
+  function nbUpdate(){
+    var n=0;try{n=GB?(GB.getUnread()|0):hGet().filter(function(x){return !x.read;}).length;}catch(e){}
+    $('nb').textContent=String(n);$('nb').hidden=!(n>0);
+  }
+
+  function fillSel(){
+    var k=$('ak'),kv=k.value||'21';k.innerHTML='';
+    ['24','22','21','18'].forEach(function(x){var o=document.createElement('option');o.value=x;o.textContent=t('kar').replace('{k}',x);k.appendChild(o);});
+    k.value=kv;
+    var d=$('ad'),dv=d.value||'ge';d.innerHTML='<option value="ge">\u2265</option><option value="le">\u2264</option>';d.value=dv;
+    var c=$('ac'),cv=c.value||cur;c.innerHTML='<option value="SAR">\ufdfc</option><option value="USD">$</option>';c.value=cv;
+    $('at').placeholder=t('price');
+  }
+  function showNow(){
+    if(!oz){$('now').textContent='';return;}
+    var k=$('ak').value,c=$('ac').value,v=oz/31.1035*(c==='USD'?1:3.75)*k/24;
+    $('now').textContent=t('now').replace('{k}',k)+': '+f(v)+' '+sym(c);
+  }
+  function getOz(){
+    fetch('https://xaus.com/api/v1/spot',{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('x');return r.json();}).then(function(j){
+      var v=parseFloat(j.spot_usd_oz||(j.xau&&j.xau.price));if(isFinite(v)&&v>0){oz=v;showNow();}
+    }).catch(function(){});
+  }
+  function renderAlerts(){
+    var box=$('al');box.innerHTML='';
+    if(!alerts.length){box.className='st';box.textContent=t('none');return;}
+    box.className='';
+    alerts.forEach(function(a){
+      var d=document.createElement('div');d.className='ar';
+      var s=document.createElement('span');
+      s.textContent=t('kar').replace('{k}',a.k)+' '+(a.dir==='le'?'\u2264':'\u2265')+' '+f(a.t)+' '+sym(a.cur)+(a.done?'  \u2714 '+t('done'):'');
+      d.appendChild(s);
+      var bx=document.createElement('span');bx.className='abx';
+      if(a.done){var rb=document.createElement('button');rb.type='button';rb.textContent='\u21bb';rb.addEventListener('click',function(){aLoad();alerts.forEach(function(z){if(z.id===a.id){z.done=false;delete z.hit;}});aSave();aLoad();renderAlerts();});bx.appendChild(rb);}
+      var xb=document.createElement('button');xb.type='button';xb.textContent='\u00d7';
+      xb.addEventListener('click',function(){aLoad();alerts=alerts.filter(function(z){return z.id!==a.id;});aSave();renderAlerts();});
+      bx.appendChild(xb);d.appendChild(bx);box.appendChild(d);
+    });
+  }
+  function renderCenter(){
+    var list=hGet(),box=$('cl');box.innerHTML='';
+    if(!list.length){box.className='st';box.textContent=t('cnone');}
+    else{
+      box.className='';
+      list.forEach(function(n){
+        var d=document.createElement('div');d.className='n'+(n.read?'':' un');
+        var b=document.createElement('b');b.textContent=n.title;
+        var s=document.createElement('span');s.textContent=n.body;
+        var m=document.createElement('small');m.textContent=new Date(n.ts).toLocaleString('en-GB');
+        d.appendChild(b);d.appendChild(s);d.appendChild(m);box.appendChild(d);
+      });
+    }
+    try{
+      if(GB)GB.markAllRead();
+      else{list.forEach(function(x){x.read=true;});localStorage.setItem('hist',JSON.stringify(list));}
+    }catch(e){}
+    nbUpdate();
+  }
+  function showTab(c){
+    $('ps').hidden=c;$('pc').hidden=!c;
+    $('ts').classList.toggle('on',!c);$('tc').classList.toggle('on',c);
+    if(c)renderCenter();else{aLoad();renderAlerts();}
+  }
+  function apply(){
+    var h=document.documentElement;h.lang=lang;h.dir=lang==='ar'?'rtl':'ltr';
+    var els=document.querySelectorAll('[data-i]');
+    for(var i=0;i<els.length;i++)els[i].textContent=t(els[i].getAttribute('data-i'));
+    document.title=t('title');$('ttl').textContent=t('title');
+    $('lang').textContent=lang==='ar'?'E':'\u0639';
+    $('back').textContent=lang==='ar'?'\u2192':'\u2190';
+    fillSel();showNow();renderAlerts();nbUpdate();
+    if(!$('pc').hidden)renderCenter();
+  }
+
+  $('back').addEventListener('click',function(){location.href='index.html';});
+  $('lang').addEventListener('click',function(){lang=lang==='ar'?'en':'ar';setP('lang',lang);apply();});
+  $('ts').addEventListener('click',function(){showTab(false);});
+  $('tc').addEventListener('click',function(){showTab(true);});
+  $('ak').addEventListener('change',showNow);
+  $('ac').addEventListener('change',showNow);
+  $('at').addEventListener('input',function(){fix($('at'));});
+  $('aadd').addEventListener('click',function(){
+    var tv=numS($('at').value);
+    if(tv<=0){$('msg').textContent=t('bad');return;}
+    aLoad();
+    alerts.push({id:String(Date.now()),k:$('ak').value,dir:$('ad').value,t:tv,cur:$('ac').value,done:false});
+    aSave();$('at').value='';$('msg').textContent=t('saved');renderAlerts();
+  });
+  $('test').addEventListener('click',function(){
+    try{if(GB){GB.askNotify();GB.notifyNow(t('testT'),t('testB'));nbUpdate();}}catch(e){}
+  });
+  $('clear').addEventListener('click',function(){
+    try{if(GB)GB.clearHistory();else localStorage.removeItem('hist');}catch(e){}
+    renderCenter();
+  });
+  document.addEventListener('visibilitychange',function(){if(!document.hidden){aLoad();renderAlerts();nbUpdate();if(!$('pc').hidden)renderCenter();}});
+
+  aLoad();apply();getOz();
+  setInterval(getOz,30000);
+  if(location.hash==='#center')showTab(true);
+})();
+</script>
+</body>
+</html>

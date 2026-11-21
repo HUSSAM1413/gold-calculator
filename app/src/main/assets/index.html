@@ -42,7 +42,12 @@ input[type=text]{flex:1;min-width:0;border:0;background:transparent;color:var(--
 .total small{font-size:16px;font-weight:500}
 .live{margin-bottom:14px}
 [hidden]{display:none!important}
-.livebtn{display:flex;justify-content:space-between;align-items:center;width:100%;margin:0 0 12px;padding:12px 14px;font-weight:700;font-size:16px;color:var(--gold-deep);background:var(--card)}
+.livebtn{display:flex;justify-content:space-between;align-items:center;flex:1;min-width:0;margin:0;padding:12px 10px;font-weight:700;font-size:15px;color:var(--gold-deep);background:var(--card)}
+.badge{min-width:20px;height:20px;border-radius:10px;background:#c0392b;color:#fff;font-size:12px;display:inline-flex;align-items:center;justify-content:center;padding:0 5px}
+.btnrow{display:flex;gap:8px;margin-bottom:12px}
+.ar{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:15px}
+.abx{display:flex;gap:6px;flex:none}
+.abx button{width:32px;height:32px;margin:0;padding:0;font-size:16px}
 .lbr{display:flex;align-items:center;gap:10px}
 .tools{display:flex;align-items:center;gap:8px;flex:none}
 .curs{display:flex;gap:4px}
@@ -87,7 +92,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 <main>
   <div class="top"><h1 data-i="title">حاسبة شراء الذهب</h1><div class="tools"><div class="curs"><button type="button" class="cur on" data-c="SAR" data-i="curSAR">﷼</button><button type="button" class="cur" data-c="USD" data-i="curUSD">$</button></div><button type="button" class="lang" id="lang">E</button></div></div>
   <div class="tabs"><button type="button" class="tab on" id="mf" data-i="tabF">احسب المجموع</button><button type="button" class="tab" id="mr" data-i="tabR">حلل سعر البائع</button><button type="button" class="tab" id="mz" data-i="tabZ">زكاة الذهب</button></div>
-  <button type="button" class="livebtn" id="lb" aria-expanded="false"><span data-i="liveT">أسعار الذهب المباشرة</span><span class="lbr"><span class="dot" id="dot"></span><span id="arr">▾</span></span></button>
+  <div class="btnrow"><button type="button" class="livebtn" id="lb" aria-expanded="false"><span data-i="liveT">الأسعار المباشرة</span><span class="lbr"><span class="dot" id="dot"></span><span id="arr">▾</span></span></button><button type="button" class="livebtn" id="ab"><span data-i="alertsT">التنبيهات</span><span class="lbr"><span class="badge" id="nb" hidden>0</span><span>🔔</span></span></button></div>
   <div class="card live" id="livep" hidden><div class="lh"><span id="lhu"></span></div><div class="lg" id="lg"></div><div class="st" id="lt"></div></div>
   <div class="card">
     <div class="field" id="fw"><label for="w" data-i="weight">الوزن</label>
@@ -116,14 +121,14 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 <script>
 (function(){
   var D={
-    ar:{zEq:'الوزن المكافئ لعيار 24',zNis24:'النصاب (عيار 24)',zG24:'الزكاة بالجرام (عيار 24)',zAdd:'+ إضافة عيار آخر',zp:'السعر',zEnter:'أدخل وزن الذهب',zNoP:'سعر الجرام ناقص في بعض الصفوف، اكتبه أو انتظر تحميل الأسعار',zNote:'تُحسب الزكاة على مجموع الذهب كله بعد تحويله لعيار 24',tabZ:'زكاة الذهب',totalZ:'مقدار الزكاة',zNis:'النصاب لعيار {k}',zRea:'بلغ النصاب، تجب الزكاة',zNot:'لم يبلغ النصاب، لا زكاة عليك',zPick:'اختر العيار أولاً',zRate:'نسبة الزكاة',zG:'الزكاة بالجرام',liveT:'أسعار الذهب المباشرة',kar:'عيار {k}',liveUpd:'آخر تحديث',srcSpot:'من سعر الأونصة العالمي',srcSite:'من saudigoldprice.com',liveFail:'تعذر التحديث',liveFailNo:'تعذر جلب الأسعار، تتكرر المحاولة كل 30 ثانية',liveWait:'جاري التحميل...',curSAR:'\ufdfc',curUSD:'$',title:'حاسبة شراء الذهب',tabF:'احسب المجموع',tabR:'حلل سعر البائع',weight:'الوزن',gram:'جرام',price:'سعر الجرام',sar:'ريال',sarG:'ريال / جرام',
+    ar:{alertsT:'التنبيهات',aAdd:'+ إضافة تنبيه',aNone:'ما فيه تنبيهات',aDone:'تم',aBad:'اكتب المبلغ المطلوب',aHint:'يوصلك إشعار لما يصير سعر الجرام أكبر من أو يساوي (≥) أو أقل من أو يساوي (≤) المبلغ',aTitle:'تنبيه سعر الذهب',aHit:'عيار {k} وصل {p} {u} للجرام',zEq:'الوزن المكافئ لعيار 24',zNis24:'النصاب (عيار 24)',zG24:'الزكاة بالجرام (عيار 24)',zAdd:'+ إضافة عيار آخر',zp:'السعر',zEnter:'أدخل وزن الذهب',zNoP:'سعر الجرام ناقص في بعض الصفوف، اكتبه أو انتظر تحميل الأسعار',zNote:'تُحسب الزكاة على مجموع الذهب كله بعد تحويله لعيار 24',tabZ:'زكاة الذهب',totalZ:'مقدار الزكاة',zNis:'النصاب لعيار {k}',zRea:'بلغ النصاب، تجب الزكاة',zNot:'لم يبلغ النصاب، لا زكاة عليك',zPick:'اختر العيار أولاً',zRate:'نسبة الزكاة',zG:'الزكاة بالجرام',liveT:'الأسعار المباشرة',kar:'عيار {k}',liveUpd:'آخر تحديث',srcSpot:'من سعر الأونصة العالمي',srcSite:'من saudigoldprice.com',liveFail:'تعذر التحديث',liveFailNo:'تعذر جلب الأسعار، تتكرر المحاولة كل 30 ثانية',liveWait:'جاري التحميل...',curSAR:'\ufdfc',curUSD:'$',title:'حاسبة شراء الذهب',tabF:'احسب المجموع',tabR:'حلل سعر البائع',weight:'الوزن',gram:'جرام',price:'سعر الجرام',sar:'ريال',sarG:'ريال / جرام',
       quote:'المبلغ اللي قاله البائع (شامل الضريبة)',quoteHint:'الباقي بعد الذهب والضريبة ينقسم بالنص بين المصنعية والمكسب',
       making:'المصنعية',profit:'مكسب المحل',bars:'سبائك عيار 24 (بدون ضريبة)',totalF:'المجموع شامل الضريبة',totalR:'المبلغ شامل الضريبة',reset:'مسح الكل',
       hint:'اضغط على العيار عشان يجيب سعر اليوم',loading:'جاري جلب السعر...',
       okSpot:'سعر عيار {k} محسوب من سعر الأونصة العالمي (خام، بدون مصنعية)',okSite:'سعر عيار {k} من saudigoldprice.com (خام، بدون مصنعية)',
       fail:'ما قدرت أجلب السعر، تأكد من النت أو اكتبه بنفسك.',
       bGold:'قيمة الذهب',bMk:'المصنعية',bPr:'مكسب المحل',bSub:'المجموع قبل الضريبة',bVat:'ضريبة القيمة المضافة',warn:'تنبيه: المبلغ أقل من قيمة الذهب'},
-    en:{zEq:'Equivalent weight (24K)',zNis24:'Nisab (24K)',zG24:'Zakat in grams (24K)',zAdd:'+ Add another karat',zp:'Price',zEnter:'Enter gold weight',zNoP:'Price per gram is missing for some rows, type it or wait for prices to load',zNote:'Zakat is calculated on all your gold combined, converted to 24K',tabZ:'Gold zakat',totalZ:'Zakat due',zNis:'Nisab for {k}K',zRea:'Nisab reached, zakat is due',zNot:'Below nisab, no zakat due',zPick:'Select a karat first',zRate:'Zakat rate',zG:'Zakat in grams',liveT:'Live gold prices',kar:'{k}K',liveUpd:'Last update',srcSpot:'from global ounce price',srcSite:'from saudigoldprice.com',liveFail:'update failed',liveFailNo:'Could not fetch prices, retrying every 30 seconds',liveWait:'Loading...',curSAR:'\ufdfc',curUSD:'$',title:'Gold Purchase Calculator',tabF:'Calculate total',tabR:'Analyze seller price',weight:'Weight',gram:'g',price:'Price per gram',sar:'SAR',sarG:'SAR / g',
+    en:{alertsT:'Alerts',aAdd:'+ Add alert',aNone:'No alerts yet',aDone:'done',aBad:'Enter the target price',aHint:'You get a notification when the price per gram is at or above (≥) or at or below (≤) the amount',aTitle:'Gold price alert',aHit:'Karat {k} reached {p} {u} per gram',zEq:'Equivalent weight (24K)',zNis24:'Nisab (24K)',zG24:'Zakat in grams (24K)',zAdd:'+ Add another karat',zp:'Price',zEnter:'Enter gold weight',zNoP:'Price per gram is missing for some rows, type it or wait for prices to load',zNote:'Zakat is calculated on all your gold combined, converted to 24K',tabZ:'Gold zakat',totalZ:'Zakat due',zNis:'Nisab for {k}K',zRea:'Nisab reached, zakat is due',zNot:'Below nisab, no zakat due',zPick:'Select a karat first',zRate:'Zakat rate',zG:'Zakat in grams',liveT:'Live prices',kar:'{k}K',liveUpd:'Last update',srcSpot:'from global ounce price',srcSite:'from saudigoldprice.com',liveFail:'update failed',liveFailNo:'Could not fetch prices, retrying every 30 seconds',liveWait:'Loading...',curSAR:'\ufdfc',curUSD:'$',title:'Gold Purchase Calculator',tabF:'Calculate total',tabR:'Analyze seller price',weight:'Weight',gram:'g',price:'Price per gram',sar:'SAR',sarG:'SAR / g',
       quote:"Seller's price (VAT included)",quoteHint:'What is left after gold and VAT is split equally between making charge and profit',
       making:'Making charge',profit:'Shop profit',bars:'24K bars (no VAT)',totalF:'Total incl. VAT',totalR:'Price incl. VAT',reset:'Clear all',
       hint:'Tap a karat to fetch today\u2019s price',loading:'Fetching price...',
@@ -132,8 +137,10 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
       bGold:'Gold value',bMk:'Making charge',bPr:'Shop profit',bSub:'Total before VAT',bVat:'VAT',warn:'Note: the price is lower than the gold value'}
   };
   var lang='ar',cur='SAR',rev=false,zk=false,noVat=false,karat=null,prices=null,stKey='hint';
-  try{var sv=localStorage.getItem('lang');if(sv==='en'||sv==='ar')lang=sv;if(localStorage.getItem('cur')==='USD')cur='USD';}catch(e){}
+  var sv=getP('lang');if(sv==='en'||sv==='ar')lang=sv;if(getP('cur')==='USD')cur='USD';
   function $(id){return document.getElementById(id);}
+  function getP(k){try{var g=window.GoldBridge;if(g){var v=g.getPref(k);if(v)return v;}}catch(e){}try{return localStorage.getItem(k);}catch(e){return null;}}
+  function setP(k,v){try{var g=window.GoldBridge;if(g)g.setPref(k,v);}catch(e){}try{localStorage.setItem(k,v);}catch(e){}}
   var w=$('w'),p=$('p'),m=$('m'),s=$('s'),qi=$('q'),nv=$('nv'),total=$('total'),brk=$('break'),st=$('st'),chips=document.querySelectorAll('.chip');
   function t(k){
     if(k==='sar')return cur==='USD'?(lang==='ar'?'\u062f\u0648\u0644\u0627\u0631':'USD'):(lang==='ar'?'\u0631\u064a\u0627\u0644':'SAR');
@@ -181,7 +188,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
     $('lang').textContent=lang==='ar'?'E':'\u0639';
     $('tl').textContent=t(zk?'totalZ':(rev?'totalR':'totalF'));
     var cb=document.querySelectorAll('.cur');for(var j=0;j<cb.length;j++)cb[j].classList.toggle('on',cb[j].dataset.c===cur);
-    renderSt();renderLive();zRender();calc();
+    renderSt();renderLive();zRender();nbUpdate();calc();
   }
   function show(){if(prices&&karat&&prices[karat]&&!pManual){p.value=(cur==='USD'?prices[karat]/3.75:prices[karat]).toFixed(2);calc();}}
   function getHtml(){
@@ -195,6 +202,33 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
   }
   var updated=null,liveFail=false,src='okSpot',pManual=false;
   var zrows=[{k:'24',w:'',p:'',man:false}];
+  var GB=window.GoldBridge||null,alerts=[];
+  function aLoad(){try{var s=GB?GB.getAlerts():(localStorage.getItem('alerts')||'[]');alerts=JSON.parse(s||'[]');if(!Array.isArray(alerts))alerts=[];}catch(e){alerts=[];}}
+  function aSave(){var j=JSON.stringify(alerts);try{if(GB)GB.setAlerts(j,lang);else localStorage.setItem('alerts',j);}catch(e){}}
+  function aUnit(c){return c==='USD'?(lang==='ar'?'\u062f\u0648\u0644\u0627\u0631':'USD'):(lang==='ar'?'\u0631\u064a\u0627\u0644':'SAR');}
+  function aPrice(a){var v=prices&&prices[a.k];if(!v)return 0;return a.cur==='USD'?v/3.75:v;}
+  function hGet(){try{return JSON.parse(localStorage.getItem('hist')||'[]');}catch(e){return [];}}
+  function hAdd(ti,bo){var a=hGet();a.unshift({ts:Date.now(),title:ti,body:bo,read:false});try{localStorage.setItem('hist',JSON.stringify(a.slice(0,50)));}catch(e){}}
+  function nbUpdate(){
+    var n=0;try{n=GB?(GB.getUnread()|0):hGet().filter(function(x){return !x.read;}).length;}catch(e){}
+    var b=$('nb');b.textContent=String(n);b.hidden=!(n>0);
+  }
+  function aCheck(){
+    aLoad();var hits=[];
+    alerts.forEach(function(a){
+      if(a.done)return;
+      var pr=aPrice(a);if(pr<=0)return;
+      if(a.dir==='le'?pr<=a.t:pr>=a.t){a.done=true;a.hit=pr;hits.push(a);}
+    });
+    if(hits.length){
+      aSave();
+      hits.forEach(function(a){
+        var msg=t('aHit').replace('{k}',a.k).replace('{p}',f(a.hit)).replace('{u}',aUnit(a.cur));
+        if(GB){try{GB.notifyNow(t('aTitle'),msg);}catch(e){}}else hAdd(t('aTitle'),msg);
+      });
+    }
+    nbUpdate();
+  }
   function zPrice(k){var v=prices&&prices[k];return v?(cur==='USD'?v/3.75:v):0;}
   function zFill(){zrows.forEach(function(r){if(!r.man){var v=zPrice(r.k);r.p=v?v.toFixed(2):'';if(r.pin)r.pin.value=r.p;}});}
   function zRender(){
@@ -252,7 +286,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
     if(tap&&karat){stKey='loading';renderSt();}
     return fetchPrices().then(function(r){
       prices=r.p;src=r.src;updated=new Date();liveFail=false;
-      zFill();show();calc();
+      zFill();show();calc();aCheck();
       if(karat){stKey=r.src;renderSt();}
       renderLive();
     }).catch(function(){
@@ -271,7 +305,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
     var c=b.dataset.c;if(c===cur)return;
     var k=c==='USD'?1/3.75:3.75;
     [p,m,s,qi].forEach(function(el){var v=num(el);if(v>0)el.value=(v*k).toFixed(2);});
-    cur=c;try{localStorage.setItem('cur',cur);}catch(e){}
+    cur=c;setP('cur',cur);
     zrows.forEach(function(r){var v=numS(r.p);if(r.man&&v>0)r.p=(v*k).toFixed(2);});zFill();
     show();apply();
   });});
@@ -294,9 +328,10 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
     var used=zrows.map(function(r){return r.k;}),nk=['24','22','21','18'].filter(function(k){return used.indexOf(k)<0})[0]||'24';
     zrows.push({k:nk,w:'',p:'',man:false});zFill();zRender();calc();
   });
+  $('ab').addEventListener('click',function(){location.href='alerts.html';});
   $('lang').addEventListener('click',function(){
     lang=lang==='ar'?'en':'ar';
-    try{localStorage.setItem('lang',lang);}catch(e){}
+    setP('lang',lang);
     apply();
   });
   $('reset').addEventListener('click',function(){
@@ -304,10 +339,10 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
     stKey='hint';karat=null;pManual=false;zrows=[{k:'24',w:'',p:'',man:false}];zFill();chips.forEach(function(x){x.classList.remove('on');});
     apply();p.focus();
   });
-  apply();
+  aLoad();apply();
   refresh(false);
   setInterval(function(){if(!document.hidden)refresh(false);},30000);
-  document.addEventListener('visibilitychange',function(){if(!document.hidden)refresh(false);});
+  document.addEventListener('visibilitychange',function(){if(!document.hidden){nbUpdate();refresh(false);}});
 })();
 </script>
 </body>
