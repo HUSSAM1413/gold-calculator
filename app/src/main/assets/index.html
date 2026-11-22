@@ -56,6 +56,7 @@ input[type=text]{flex:1;min-width:0;border:0;background:transparent;color:var(--
 .lh{display:flex;justify-content:space-between;align-items:center;font-weight:700;color:var(--gold-deep);margin-bottom:10px;gap:8px}
 .dot{width:10px;height:10px;border-radius:50%;background:#2e9d57;flex:none}
 .dot.bad{background:#c0392b}
+.dot.off{background:#8a8a8a}
 .lg{display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:8px}
 .c{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px;text-align:center}
 .c .k{font-size:12px;color:var(--muted)}
@@ -121,14 +122,14 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 <script>
 (function(){
   var D={
-    ar:{alertsT:'التنبيهات',aAdd:'+ إضافة تنبيه',aNone:'ما فيه تنبيهات',aDone:'تم',aBad:'اكتب المبلغ المطلوب',aHint:'يوصلك إشعار لما يصير سعر الجرام أكبر من أو يساوي (≥) أو أقل من أو يساوي (≤) المبلغ',aTitle:'تنبيه سعر الذهب',aHit:'عيار {k} وصل {p} {u} للجرام',zEq:'الوزن المكافئ لعيار 24',zNis24:'النصاب (عيار 24)',zG24:'الزكاة بالجرام (عيار 24)',zAdd:'+ إضافة عيار آخر',zp:'السعر',zEnter:'أدخل وزن الذهب',zNoP:'سعر الجرام ناقص في بعض الصفوف، اكتبه أو انتظر تحميل الأسعار',zNote:'تُحسب الزكاة على مجموع الذهب كله بعد تحويله لعيار 24',tabZ:'زكاة الذهب',totalZ:'مقدار الزكاة',zNis:'النصاب لعيار {k}',zRea:'بلغ النصاب، تجب الزكاة',zNot:'لم يبلغ النصاب، لا زكاة عليك',zPick:'اختر العيار أولاً',zRate:'نسبة الزكاة',zG:'الزكاة بالجرام',liveT:'الأسعار المباشرة',kar:'عيار {k}',liveUpd:'آخر تحديث',srcSpot:'من سعر الأونصة العالمي',srcSite:'من saudigoldprice.com',liveFail:'تعذر التحديث',liveFailNo:'تعذر جلب الأسعار، تتكرر المحاولة كل 30 ثانية',liveWait:'جاري التحميل...',curSAR:'\ufdfc',curUSD:'$',title:'حاسبة شراء الذهب',tabF:'احسب المجموع',tabR:'حلل سعر البائع',weight:'الوزن',gram:'جرام',price:'سعر الجرام',sar:'ريال',sarG:'ريال / جرام',
+    ar:{closedT:'السوق مقفل',closedMsg:'السوق مقفل حالياً والأسعار متوقفة عن التحديث، هذي آخر الأسعار قبل الإغلاق. ساعات السوق من الأحد 6:00 م إلى الجمعة 5:00 م بتوقيت نيويورك، مع استراحة يومية من 5 إلى 6 م',alertsT:'التنبيهات',aAdd:'+ إضافة تنبيه',aNone:'ما فيه تنبيهات',aDone:'تم',aBad:'اكتب المبلغ المطلوب',aHint:'يوصلك إشعار لما يصير سعر الجرام أكبر من أو يساوي (≥) أو أقل من أو يساوي (≤) المبلغ',aTitle:'تنبيه سعر الذهب',aHit:'عيار {k} وصل {p} {u} للجرام',zEq:'الوزن المكافئ لعيار 24',zNis24:'النصاب (عيار 24)',zG24:'الزكاة بالجرام (عيار 24)',zAdd:'+ إضافة عيار آخر',zp:'السعر',zEnter:'أدخل وزن الذهب',zNoP:'سعر الجرام ناقص في بعض الصفوف، اكتبه أو انتظر تحميل الأسعار',zNote:'تُحسب الزكاة على مجموع الذهب كله بعد تحويله لعيار 24',tabZ:'زكاة الذهب',totalZ:'مقدار الزكاة',zNis:'النصاب لعيار {k}',zRea:'بلغ النصاب، تجب الزكاة',zNot:'لم يبلغ النصاب، لا زكاة عليك',zPick:'اختر العيار أولاً',zRate:'نسبة الزكاة',zG:'الزكاة بالجرام',liveT:'الأسعار المباشرة',kar:'عيار {k}',liveUpd:'آخر تحديث',srcSpot:'من سعر الأونصة العالمي',srcSite:'من saudigoldprice.com',liveFail:'تعذر التحديث',liveFailNo:'تعذر جلب الأسعار، تتكرر المحاولة كل 30 ثانية',liveWait:'جاري التحميل...',curSAR:'\ufdfc',curUSD:'$',title:'حاسبة شراء الذهب',tabF:'احسب المجموع',tabR:'حلل سعر البائع',weight:'الوزن',gram:'جرام',price:'سعر الجرام',sar:'ريال',sarG:'ريال / جرام',
       quote:'المبلغ اللي قاله البائع (شامل الضريبة)',quoteHint:'الباقي بعد الذهب والضريبة ينقسم بالنص بين المصنعية والمكسب',
       making:'المصنعية',profit:'مكسب المحل',bars:'سبائك عيار 24 (بدون ضريبة)',totalF:'المجموع شامل الضريبة',totalR:'المبلغ شامل الضريبة',reset:'مسح الكل',
       hint:'اضغط على العيار عشان يجيب سعر اليوم',loading:'جاري جلب السعر...',
       okSpot:'سعر عيار {k} محسوب من سعر الأونصة العالمي (خام، بدون مصنعية)',okSite:'سعر عيار {k} من saudigoldprice.com (خام، بدون مصنعية)',
       fail:'ما قدرت أجلب السعر، تأكد من النت أو اكتبه بنفسك.',
       bGold:'قيمة الذهب',bMk:'المصنعية',bPr:'مكسب المحل',bSub:'المجموع قبل الضريبة',bVat:'ضريبة القيمة المضافة',warn:'تنبيه: المبلغ أقل من قيمة الذهب'},
-    en:{alertsT:'Alerts',aAdd:'+ Add alert',aNone:'No alerts yet',aDone:'done',aBad:'Enter the target price',aHint:'You get a notification when the price per gram is at or above (≥) or at or below (≤) the amount',aTitle:'Gold price alert',aHit:'Karat {k} reached {p} {u} per gram',zEq:'Equivalent weight (24K)',zNis24:'Nisab (24K)',zG24:'Zakat in grams (24K)',zAdd:'+ Add another karat',zp:'Price',zEnter:'Enter gold weight',zNoP:'Price per gram is missing for some rows, type it or wait for prices to load',zNote:'Zakat is calculated on all your gold combined, converted to 24K',tabZ:'Gold zakat',totalZ:'Zakat due',zNis:'Nisab for {k}K',zRea:'Nisab reached, zakat is due',zNot:'Below nisab, no zakat due',zPick:'Select a karat first',zRate:'Zakat rate',zG:'Zakat in grams',liveT:'Live prices',kar:'{k}K',liveUpd:'Last update',srcSpot:'from global ounce price',srcSite:'from saudigoldprice.com',liveFail:'update failed',liveFailNo:'Could not fetch prices, retrying every 30 seconds',liveWait:'Loading...',curSAR:'\ufdfc',curUSD:'$',title:'Gold Purchase Calculator',tabF:'Calculate total',tabR:'Analyze seller price',weight:'Weight',gram:'g',price:'Price per gram',sar:'SAR',sarG:'SAR / g',
+    en:{closedT:'Market closed',closedMsg:'The market is closed and prices are not updating. These are the last prices before closing. Market hours: Sunday 6:00 PM to Friday 5:00 PM New York time, with a daily break from 5 to 6 PM',alertsT:'Alerts',aAdd:'+ Add alert',aNone:'No alerts yet',aDone:'done',aBad:'Enter the target price',aHint:'You get a notification when the price per gram is at or above (≥) or at or below (≤) the amount',aTitle:'Gold price alert',aHit:'Karat {k} reached {p} {u} per gram',zEq:'Equivalent weight (24K)',zNis24:'Nisab (24K)',zG24:'Zakat in grams (24K)',zAdd:'+ Add another karat',zp:'Price',zEnter:'Enter gold weight',zNoP:'Price per gram is missing for some rows, type it or wait for prices to load',zNote:'Zakat is calculated on all your gold combined, converted to 24K',tabZ:'Gold zakat',totalZ:'Zakat due',zNis:'Nisab for {k}K',zRea:'Nisab reached, zakat is due',zNot:'Below nisab, no zakat due',zPick:'Select a karat first',zRate:'Zakat rate',zG:'Zakat in grams',liveT:'Live prices',kar:'{k}K',liveUpd:'Last update',srcSpot:'from global ounce price',srcSite:'from saudigoldprice.com',liveFail:'update failed',liveFailNo:'Could not fetch prices, retrying every 30 seconds',liveWait:'Loading...',curSAR:'\ufdfc',curUSD:'$',title:'Gold Purchase Calculator',tabF:'Calculate total',tabR:'Analyze seller price',weight:'Weight',gram:'g',price:'Price per gram',sar:'SAR',sarG:'SAR / g',
       quote:"Seller's price (VAT included)",quoteHint:'What is left after gold and VAT is split equally between making charge and profit',
       making:'Making charge',profit:'Shop profit',bars:'24K bars (no VAT)',totalF:'Total incl. VAT',totalR:'Price incl. VAT',reset:'Clear all',
       hint:'Tap a karat to fetch today\u2019s price',loading:'Fetching price...',
@@ -252,6 +253,18 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
       box.appendChild(d);
     });
   }
+  var mOpen=true;
+  function marketOpen(){
+    try{
+      var p=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',weekday:'short',hour:'numeric',minute:'numeric',hour12:false}).formatToParts(new Date()),d='',hh=0,mm=0;
+      p.forEach(function(x){if(x.type==='weekday')d=x.value;if(x.type==='hour')hh=parseInt(x.value,10)%24;if(x.type==='minute')mm=parseInt(x.value,10);});
+      var mins=hh*60+mm;
+      if(d==='Sat')return false;
+      if(d==='Fri')return mins<17*60;
+      if(d==='Sun')return mins>=18*60;
+      return !(mins>=17*60&&mins<18*60);
+    }catch(e){return true;}
+  }
   function fetchPrices(){
     return fetch('https://xaus.com/api/v1/spot',{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('http');return r.json();}).then(function(j){
       var oz=parseFloat(j.spot_usd_oz||(j.xau&&j.xau.price));
@@ -274,13 +287,15 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
   }
   function renderLive(){
     var g=$('lg'),lt=$('lt'),ks=['24','22','21','18','14'],h='';
+    mOpen=marketOpen();
     $('lhu').textContent=t('sarG');
+    var lbs=document.querySelector('#lb [data-i=liveT]');if(lbs)lbs.textContent=mOpen?t('liveT'):t('closedT');
     if(prices){
       ks.forEach(function(k){if(prices[k]){var v=cur==='USD'?prices[k]/3.75:prices[k];h+='<div class="c"><div class="k">'+t('kar').replace('{k}',k)+'</div><div class="pv">'+f(v)+'</div></div>';}});
       g.innerHTML=h;
-      lt.textContent=t('liveUpd')+' '+updated.toLocaleTimeString('en-GB')+' \u00b7 '+t(src==='okSite'?'srcSite':'srcSpot')+(liveFail?' \u00b7 '+t('liveFail'):'');
-    }else{g.innerHTML='';lt.textContent=t(liveFail?'liveFailNo':'liveWait');}
-    $('dot').className='dot'+(liveFail?' bad':'');
+      lt.textContent=(mOpen?'':t('closedMsg')+' \u00b7 ')+t('liveUpd')+' '+updated.toLocaleTimeString('en-GB')+' \u00b7 '+t(src==='okSite'?'srcSite':'srcSpot')+(liveFail?' \u00b7 '+t('liveFail'):'');
+    }else{g.innerHTML='';lt.textContent=!mOpen?t('closedMsg'):t(liveFail?'liveFailNo':'liveWait');}
+    $('dot').className='dot'+(!mOpen?' off':(liveFail?' bad':''));
   }
   function refresh(tap){
     if(tap&&karat){stKey='loading';renderSt();}
@@ -313,7 +328,7 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
   chips.forEach(function(c){c.addEventListener('click',function(){
     karat=c.dataset.k;noVat=(karat==='24');nv.checked=noVat;
     chips.forEach(function(x){x.classList.toggle('on',x===c);});
-    pManual=false;if(prices){show();stKey=src;renderSt();}calc();refresh(true);
+    pManual=false;if(prices){show();stKey=src;renderSt();}calc();mOpen=marketOpen();if(mOpen||!prices)refresh(true);
   });});
   nv.addEventListener('change',function(){noVat=nv.checked;calc();});
   $('mf').addEventListener('click',function(){setMode('f');});
@@ -340,9 +355,13 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
     apply();p.focus();
   });
   aLoad();apply();
-  refresh(false);
-  setInterval(function(){if(!document.hidden)refresh(false);},30000);
-  document.addEventListener('visibilitychange',function(){if(!document.hidden){nbUpdate();refresh(false);}});
+  function tick(){
+    mOpen=marketOpen();
+    if(mOpen||!prices)refresh(false);else renderLive();
+  }
+  tick();
+  setInterval(function(){if(!document.hidden)tick();},30000);
+  document.addEventListener('visibilitychange',function(){if(!document.hidden){nbUpdate();tick();}});
 })();
 </script>
 </body>

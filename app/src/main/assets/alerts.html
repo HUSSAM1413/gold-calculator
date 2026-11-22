@@ -76,11 +76,11 @@ input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:i
   var D={
     ar:{title:'التنبيهات',tabS:'إعداد التنبيهات',tabC:'مركز الإشعارات',kar:'عيار {k}',now:'السعر الحالي لعيار {k}',add:'+ إضافة تنبيه',
       hint:'يوصلك إشعار لما يصير سعر الجرام أكبر من أو يساوي (≥) أو أقل من أو يساوي (≤) المبلغ. الفحص في الخلفية كل 15 دقيقة تقريباً، حتى لو التطبيق مسكر. التنبيه يشتغل مرة وحدة، وتقدر تعيد تفعيله بزر ↻.',
-      none:'ما فيه تنبيهات',done:'تم',bad:'اكتب المبلغ المطلوب',saved:'تمت إضافة التنبيه',test:'إرسال إشعار تجريبي',testT:'إشعار تجريبي',testB:'التنبيهات تشتغل ✅',
+      none:'ما فيه تنبيهات',closed:'السوق مقفل',done:'تم',bad:'اكتب المبلغ المطلوب',saved:'تمت إضافة التنبيه',test:'إرسال إشعار تجريبي',testT:'إشعار تجريبي',testB:'التنبيهات تشتغل ✅',
       cnone:'ما فيه إشعارات',cclear:'مسح الكل',price:'السعر'},
     en:{title:'Alerts',tabS:'Set alerts',tabC:'Notification center',kar:'{k}K',now:'Current {k}K price',add:'+ Add alert',
       hint:'You get a notification when the price per gram is at or above (≥) or at or below (≤) the amount. The check runs in the background about every 15 minutes, even when the app is closed. An alert fires once; re-arm it with ↻.',
-      none:'No alerts yet',done:'done',bad:'Enter the target price',saved:'Alert added',test:'Send test notification',testT:'Test notification',testB:'Alerts are working ✅',
+      none:'No alerts yet',closed:'Market closed',done:'done',bad:'Enter the target price',saved:'Alert added',test:'Send test notification',testT:'Test notification',testB:'Alerts are working ✅',
       cnone:'No notifications yet',cclear:'Clear all',price:'Price'}
   };
   function $(id){return document.getElementById(id);}
@@ -96,6 +96,17 @@ input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:i
   function unit(c){return c==='USD'?(lang==='ar'?'\u062f\u0648\u0644\u0627\u0631':'USD'):(lang==='ar'?'\u0631\u064a\u0627\u0644':'SAR');}
   function sym(c){return c==='USD'?'$':'\ufdfc';}
 
+  function marketOpen(){
+    try{
+      var p=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',weekday:'short',hour:'numeric',minute:'numeric',hour12:false}).formatToParts(new Date()),d='',hh=0,mm=0;
+      p.forEach(function(x){if(x.type==='weekday')d=x.value;if(x.type==='hour')hh=parseInt(x.value,10)%24;if(x.type==='minute')mm=parseInt(x.value,10);});
+      var mins=hh*60+mm;
+      if(d==='Sat')return false;
+      if(d==='Fri')return mins<17*60;
+      if(d==='Sun')return mins>=18*60;
+      return !(mins>=17*60&&mins<18*60);
+    }catch(e){return true;}
+  }
   function aLoad(){try{var s=GB?GB.getAlerts():(localStorage.getItem('alerts')||'[]');alerts=JSON.parse(s||'[]');if(!Array.isArray(alerts))alerts=[];}catch(e){alerts=[];}}
   function aSave(){var j=JSON.stringify(alerts);try{if(GB)GB.setAlerts(j,lang);else localStorage.setItem('alerts',j);}catch(e){}}
   function hGet(){try{return JSON.parse(GB?GB.getHistory():(localStorage.getItem('hist')||'[]'))||[];}catch(e){return [];}}
@@ -115,7 +126,7 @@ input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:i
   function showNow(){
     if(!oz){$('now').textContent='';return;}
     var k=$('ak').value,c=$('ac').value,v=oz/31.1035*(c==='USD'?1:3.75)*k/24;
-    $('now').textContent=t('now').replace('{k}',k)+': '+f(v)+' '+sym(c);
+    $('now').textContent=t('now').replace('{k}',k)+': '+f(v)+' '+sym(c)+(marketOpen()?'':' \u00b7 '+t('closed'));
   }
   function getOz(){
     fetch('https://xaus.com/api/v1/spot',{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('x');return r.json();}).then(function(j){
@@ -197,7 +208,7 @@ input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:i
   document.addEventListener('visibilitychange',function(){if(!document.hidden){aLoad();renderAlerts();nbUpdate();if(!$('pc').hidden)renderCenter();}});
 
   aLoad();apply();getOz();
-  setInterval(getOz,30000);
+  setInterval(function(){if(marketOpen()||!oz)getOz();else showNow();},30000);
   if(location.hash==='#center')showTab(true);
 })();
 </script>
