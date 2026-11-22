@@ -12,7 +12,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class PriceJob extends JobService {
     static final int ID = 7;
@@ -28,6 +30,16 @@ public class PriceJob extends JobService {
 
     static void cancel(Context c) {
         ((JobScheduler) c.getSystemService(Context.JOB_SCHEDULER_SERVICE)).cancel(ID);
+    }
+
+    static boolean marketOpen() {
+        Calendar c = Calendar.getInstance(TimeZone.getTimeZone("America/New_York"));
+        int d = c.get(Calendar.DAY_OF_WEEK);
+        int mins = c.get(Calendar.HOUR_OF_DAY) * 60 + c.get(Calendar.MINUTE);
+        if (d == Calendar.SATURDAY) return false;
+        if (d == Calendar.FRIDAY) return mins < 17 * 60;
+        if (d == Calendar.SUNDAY) return mins >= 18 * 60;
+        return !(mins >= 17 * 60 && mins < 18 * 60);
     }
 
     @Override
@@ -61,6 +73,7 @@ public class PriceJob extends JobService {
     static void check(Context c) throws Exception {
         String json = Alerts.load(c);
         if (!Alerts.hasActive(json)) { cancel(c); return; }
+        if (!marketOpen()) return;
         double sar24 = fetchOz() / 31.1035 * 3.75;
         JSONArray a = new JSONArray(json);
         boolean ar = "ar".equals(Alerts.lang(c)), changed = false;
