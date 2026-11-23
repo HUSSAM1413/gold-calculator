@@ -13,7 +13,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 public class PriceJob extends JobService {
@@ -70,13 +72,14 @@ public class PriceJob extends JobService {
         return oz;
     }
 
-    static void check(Context c) throws Exception {
+    static synchronized void check(Context c) throws Exception {
         String json = Alerts.load(c);
         if (!Alerts.hasActive(json)) { cancel(c); return; }
         if (!marketOpen()) return;
         double sar24 = fetchOz() / 31.1035 * 3.75;
         JSONArray a = new JSONArray(json);
-        boolean ar = "ar".equals(Alerts.lang(c)), changed = false;
+        boolean ar = "ar".equals(Alerts.lang(c));
+        Map<String, JSONObject> upd = new HashMap<String, JSONObject>();
         for (int i = 0; i < a.length(); i++) {
             JSONObject o = a.getJSONObject(i);
             if (o.optBoolean("done")) continue;
@@ -85,23 +88,35 @@ public class PriceJob extends JobService {
             double price = sar24 * Integer.parseInt(k) / 24.0;
             if (usd) price /= 3.75;
             double target = o.getDouble("t");
-            boolean hit = "le".equals(o.optString("dir")) ? price <= target : price >= target;
-            if (!hit) continue;
-            o.put("done", true);
-            o.put("hit", price);
-            changed = true;
-            String u = usd ? (ar ? "دولار" : "USD") : (ar ? "ريال" : "SAR");
-            String pr = String.format(Locale.US, "%.2f", price);
-            String tg = String.format(Locale.US, "%.2f", target);
-            Notifier.show(c,
-                ar ? "تنبيه سعر الذهب" : "Gold price alert",
-                ar ? "عيار " + k + " وصل " + pr + " " + u + " للجرام (الهدف " + tg + ")"
-                   : "Karat " + k + " reached " + pr + " " + u + " per gram (target " + tg + ")");
+            boolean hit = Math.abs(price - target) < 0.005;
+            if (!hit && o.has("last")) {
+                double last = o.getDouble("last");
+                hit = (last - target) * (price - target) <= 0;
+            }
+            o.put("last", price);
+            if (hit) {
+                o.put("done", true);
+                o.put("hit", price);
+                String u = usd ? (ar ? "دولار" : "USD") : (ar ? "ريال" : "SAR");
+                String pr = String.format(Locale.US, "%.2f", price);
+                String tg = String.format(Locale.US, "%.2f", target);
+                Notifier.show(c,
+                    ar ? "تنبيه سعر الذهب" : "Gold price alert",
+                    ar ? "عيار " + k + " وصل " + pr + " " + u + " للجرام (الهدف " + tg + ")"
+                       : "Karat " + k + " reached " + pr + " " + u + " per gram (target " + tg + ")");
+            }
+            upd.put(o.optString("id"), o);
         }
-        if (changed) {
-            String out = a.toString();
-            Alerts.save(c, out);
-            if (!Alerts.hasActive(out)) cancel(c);
+        JSONArray cur = new JSONArray(Alerts.load(c));
+        for (int i = 0; i < cur.length(); i++) {
+            JSONObject o = cur.getJSONObject(i);
+            JSONObject u = upd.get(o.optString("id"));
+            if (u == null || o.optBoolean("done")) continue;
+            o.put("last", u.getDouble("last"));
+            if (u.optBoolean("done")) { o.put("done", true); o.put("hit", u.getDouble("hit")); }
         }
+        String out = cur.toString();
+        Alerts.save(c, out);
+        if (!Alerts.hasActive(out)) cancel(c);
     }
 }
