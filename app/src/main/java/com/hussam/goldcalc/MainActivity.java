@@ -23,6 +23,7 @@ public class MainActivity extends Activity {
         s.setDomStorageEnabled(true);
         web.addJavascriptInterface(new Bridge(), "GoldBridge");
         web.setWebViewClient(new WebViewClient());
+        if (Alerts.hasActive(Alerts.load(this))) WatchService.start(this);
         String page = getIntent() != null ? getIntent().getStringExtra("page") : null;
         web.loadUrl("center".equals(page)
             ? "file:///android_asset/alerts.html#center"
@@ -46,8 +47,14 @@ public class MainActivity extends Activity {
         @JavascriptInterface public void setAlerts(String json, String lang) {
             Alerts.save(MainActivity.this, json);
             if (lang != null && lang.length() > 0) Alerts.setPref(MainActivity.this, "lang", lang);
-            if (Alerts.hasActive(json)) { PriceJob.schedule(MainActivity.this); askPermission(); }
-            else PriceJob.cancel(MainActivity.this);
+            if (Alerts.hasActive(json)) {
+                PriceJob.schedule(MainActivity.this);
+                runOnUiThread(new Runnable() { public void run() { WatchService.start(MainActivity.this); }});
+                askPermission();
+            } else {
+                PriceJob.cancel(MainActivity.this);
+                WatchService.stop(MainActivity.this);
+            }
         }
         @JavascriptInterface public String getPref(String k) { return Alerts.pref(MainActivity.this, k); }
         @JavascriptInterface public void setPref(String k, String v) { Alerts.setPref(MainActivity.this, k, v); }
