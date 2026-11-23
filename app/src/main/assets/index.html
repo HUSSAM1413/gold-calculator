@@ -214,19 +214,21 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
     var n=0;try{n=GB?(GB.getUnread()|0):hGet().filter(function(x){return !x.read;}).length;}catch(e){}
     var b=$('nb');b.textContent=String(n);b.hidden=!(n>0);
   }
+  var lastP={};
   function aCheck(){
-    aLoad();var hits=[];
+    aLoad();
+    if(GB){nbUpdate();return;}
+    var hits=[];
     alerts.forEach(function(a){
       if(a.done)return;
       var pr=aPrice(a);if(pr<=0)return;
-      if(a.dir==='le'?pr<=a.t:pr>=a.t){a.done=true;a.hit=pr;hits.push(a);}
+      var hit=Math.abs(pr-a.t)<0.005||(lastP[a.id]!==undefined&&(lastP[a.id]-a.t)*(pr-a.t)<=0);
+      lastP[a.id]=pr;
+      if(hit){a.done=true;a.hit=pr;hits.push(a);}
     });
     if(hits.length){
       aSave();
-      hits.forEach(function(a){
-        var msg=t('aHit').replace('{k}',a.k).replace('{p}',f(a.hit)).replace('{u}',aUnit(a.cur));
-        if(GB){try{GB.notifyNow(t('aTitle'),msg);}catch(e){}}else hAdd(t('aTitle'),msg);
-      });
+      hits.forEach(function(a){hAdd(t('aTitle'),t('aHit').replace('{k}',a.k).replace('{p}',f(a.hit)).replace('{u}',aUnit(a.cur)));});
     }
     nbUpdate();
   }

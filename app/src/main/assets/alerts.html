@@ -57,7 +57,7 @@ input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:i
   </div>
 
   <div id="ps" class="card">
-    <div class="zr"><select id="ak"></select><select id="ad"></select><select id="ac"></select><div class="input"><input id="at" type="text" inputmode="decimal" autocomplete="off"></div></div>
+    <div class="zr"><select id="ak"></select><select id="ac"></select><div class="input"><input id="at" type="text" inputmode="decimal" autocomplete="off"></div></div>
     <div class="st" id="now"></div>
     <button type="button" class="primary" id="aadd" data-i="add"></button>
     <div class="st" id="msg"></div>
@@ -75,11 +75,11 @@ input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:i
 (function(){
   var D={
     ar:{title:'التنبيهات',tabS:'إعداد التنبيهات',tabC:'مركز الإشعارات',kar:'عيار {k}',now:'السعر الحالي لعيار {k}',add:'+ إضافة تنبيه',
-      hint:'يوصلك إشعار لما يصير سعر الجرام أكبر من أو يساوي (≥) أو أقل من أو يساوي (≤) المبلغ. الفحص في الخلفية كل 15 دقيقة تقريباً، حتى لو التطبيق مسكر. التنبيه يشتغل مرة وحدة، وتقدر تعيد تفعيله بزر ↻.',
+      hint:'يوصلك إشعار لما يصير سعر الجرام يساوي المبلغ بالضبط (بدقة منزلتين عشريتين)، أو لما يمر السعر على المبلغ بين فحصين. الفحص كل 30 ثانية حتى لو التطبيق مسكر. التنبيه يشتغل مرة وحدة، وتقدر تعيد تفعيله بزر ↻.',
       none:'ما فيه تنبيهات',closed:'السوق مقفل',done:'تم',bad:'اكتب المبلغ المطلوب',saved:'تمت إضافة التنبيه',test:'إرسال إشعار تجريبي',testT:'إشعار تجريبي',testB:'التنبيهات تشتغل ✅',
       cnone:'ما فيه إشعارات',cclear:'مسح الكل',price:'السعر'},
     en:{title:'Alerts',tabS:'Set alerts',tabC:'Notification center',kar:'{k}K',now:'Current {k}K price',add:'+ Add alert',
-      hint:'You get a notification when the price per gram is at or above (≥) or at or below (≤) the amount. The check runs in the background about every 15 minutes, even when the app is closed. An alert fires once; re-arm it with ↻.',
+      hint:'You get a notification when the price per gram equals the amount exactly (to 2 decimals), or when the price passes through the amount between two checks. The check runs every 30 seconds even when the app is closed. An alert fires once; re-arm it with ↻.',
       none:'No alerts yet',closed:'Market closed',done:'done',bad:'Enter the target price',saved:'Alert added',test:'Send test notification',testT:'Test notification',testB:'Alerts are working ✅',
       cnone:'No notifications yet',cclear:'Clear all',price:'Price'}
   };
@@ -119,7 +119,6 @@ input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:i
     var k=$('ak'),kv=k.value||'21';k.innerHTML='';
     ['24','22','21','18'].forEach(function(x){var o=document.createElement('option');o.value=x;o.textContent=t('kar').replace('{k}',x);k.appendChild(o);});
     k.value=kv;
-    var d=$('ad'),dv=d.value||'ge';d.innerHTML='<option value="ge">\u2265</option><option value="le">\u2264</option>';d.value=dv;
     var c=$('ac'),cv=c.value||cur;c.innerHTML='<option value="SAR">\ufdfc</option><option value="USD">$</option>';c.value=cv;
     $('at').placeholder=t('price');
   }
@@ -140,10 +139,10 @@ input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:i
     alerts.forEach(function(a){
       var d=document.createElement('div');d.className='ar';
       var s=document.createElement('span');
-      s.textContent=t('kar').replace('{k}',a.k)+' '+(a.dir==='le'?'\u2264':'\u2265')+' '+f(a.t)+' '+sym(a.cur)+(a.done?'  \u2714 '+t('done'):'');
+      s.textContent=t('kar').replace('{k}',a.k)+' = '+f(a.t)+' '+sym(a.cur)+(a.done?'  \u2714 '+t('done'):'');
       d.appendChild(s);
       var bx=document.createElement('span');bx.className='abx';
-      if(a.done){var rb=document.createElement('button');rb.type='button';rb.textContent='\u21bb';rb.addEventListener('click',function(){aLoad();alerts.forEach(function(z){if(z.id===a.id){z.done=false;delete z.hit;}});aSave();aLoad();renderAlerts();});bx.appendChild(rb);}
+      if(a.done){var rb=document.createElement('button');rb.type='button';rb.textContent='\u21bb';rb.addEventListener('click',function(){aLoad();alerts.forEach(function(z){if(z.id===a.id){z.done=false;delete z.hit;delete z.last;}});aSave();aLoad();renderAlerts();});bx.appendChild(rb);}
       var xb=document.createElement('button');xb.type='button';xb.textContent='\u00d7';
       xb.addEventListener('click',function(){aLoad();alerts=alerts.filter(function(z){return z.id!==a.id;});aSave();renderAlerts();});
       bx.appendChild(xb);d.appendChild(bx);box.appendChild(d);
@@ -195,7 +194,7 @@ input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:i
     var tv=numS($('at').value);
     if(tv<=0){$('msg').textContent=t('bad');return;}
     aLoad();
-    alerts.push({id:String(Date.now()),k:$('ak').value,dir:$('ad').value,t:tv,cur:$('ac').value,done:false});
+    alerts.push({id:String(Date.now()),k:$('ak').value,t:tv,cur:$('ac').value,done:false});
     aSave();$('at').value='';$('msg').textContent=t('saved');renderAlerts();
   });
   $('test').addEventListener('click',function(){
